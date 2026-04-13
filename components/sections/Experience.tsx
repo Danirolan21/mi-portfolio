@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { Briefcase, GraduationCap, Award } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -92,21 +92,37 @@ function TimelineCard({ item }: { item: TimelineItem }) {
 
 export default function Experience() {
   const containerRef = useRef<HTMLDivElement>(null)
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  })
+  const trackRef = useRef<HTMLDivElement>(null)
 
   const totalItems = timeline.length + 1
   const cardWidth  = 320
   const gap        = 32
   const totalWidth = totalItems * (cardWidth + gap)
 
+  const [scrollEnd, setScrollEnd] = useState(Math.max(0, totalWidth - 1200))
+
+  useEffect(() => {
+    const measure = () => {
+      if (trackRef.current) {
+        setScrollEnd(
+          Math.max(0, trackRef.current.scrollWidth - window.innerWidth)
+        )
+      }
+    }
+    measure()
+    window.addEventListener("resize", measure)
+    return () => window.removeEventListener("resize", measure)
+  }, [])
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  })
+
   const translateX = useTransform(
     scrollYProgress,
     [0, 1],
-    ["0px", `-${totalWidth - cardWidth}px`],
+    [0, -scrollEnd],
   )
 
   const progressWidth = useTransform(
@@ -119,7 +135,7 @@ export default function Experience() {
     <section
       id="experience"
       ref={containerRef}
-      style={{ minHeight: `${totalItems * 120}vh` }}
+      style={{ minHeight: `${totalItems * 85}vh` }}
       className="relative"
     >
       <div className="sticky top-0 h-screen flex flex-col overflow-hidden">
@@ -193,6 +209,7 @@ export default function Experience() {
 
           {/* Scrolling horizontal track */}
           <motion.div
+            ref={trackRef}
             style={{ x: translateX }}
             className="h-full flex gap-8 px-6 lg:px-16 xl:px-24 will-change-transform"
           >
