@@ -60,7 +60,7 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center px-6 lg:px-16 xl:px-24 py-24"
+      className="relative min-h-screen flex items-center justify-center px-6 lg:px-16 xl:px-24 pt-14 pb-24 sm:py-24"
     >
       <div className="relative w-full max-w-7xl mx-auto">
         {/* Ambient glow */}

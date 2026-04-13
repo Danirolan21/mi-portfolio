@@ -149,7 +149,7 @@ export default function Experience() {
         />
 
         {/* Header */}
-        <div className="shrink-0 px-6 lg:px-16 xl:px-24 pt-16 sm:pt-20 lg:pt-24 pb-4 sm:pb-6 lg:pb-8 flex flex-col gap-2">
+        <div className="shrink-0 px-6 lg:px-16 xl:px-24 pt-10 sm:pt-16 lg:pt-24 pb-3 sm:pb-6 lg:pb-8 flex flex-col gap-1.5 sm:gap-2">
           <motion.span
             initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
             whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -166,7 +166,7 @@ export default function Experience() {
             whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, ease: EASE, delay: 0.08 }}
-            className="font-display text-deep-text text-3xl sm:text-4xl lg:text-5xl
+            className="font-display text-deep-text text-2xl sm:text-4xl lg:text-5xl
                        font-extrabold tracking-tight"
           >
             Experiencia & Formación
@@ -198,11 +198,11 @@ export default function Experience() {
         {/* ── Timeline track area ── */}
         <div className="relative flex-1 min-h-0">
           {/* Static timeline spine */}
-          <div className="absolute top-1/2 left-0 w-full h-px bg-white/[0.06] -translate-y-[0.5px]" />
+          <div className="absolute top-[30%] lg:top-1/2 left-0 w-full h-px bg-white/[0.06] -translate-y-[0.5px]" />
 
           {/* Animated progress fill */}
           <motion.div
-            className="absolute top-1/2 left-0 h-[2px] -translate-y-[1px] rounded-r-full
+            className="absolute top-[30%] lg:top-1/2 left-0 h-[2px] -translate-y-[1px] rounded-r-full
                        bg-gradient-to-r from-deep-accent/50 via-deep-accent/30 to-transparent"
             style={{ width: progressWidth }}
           />
@@ -219,8 +219,7 @@ export default function Experience() {
 
               return (
                 <div key={i} className="flex-shrink-0 w-72 sm:w-80 h-full relative">
-                  {/* Colored dot on the timeline */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+                  <div className="absolute top-[30%] lg:top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
                     <div
                       className="w-3 h-3 rounded-full border-2"
                       style={{
@@ -235,7 +234,7 @@ export default function Experience() {
                   <div
                     className={cn(
                       "absolute left-1/2 -translate-x-1/2 w-px h-4",
-                      "top-[calc(50%_+_6px)]",
+                      "top-[calc(30%_+_6px)] lg:top-[calc(50%_+_6px)]",
                       isAbove && "lg:top-auto lg:bottom-[calc(50%_+_6px)]",
                     )}
                     style={{ backgroundColor: `${color}35` }}
@@ -245,7 +244,7 @@ export default function Experience() {
                   <div
                     className={cn(
                       "absolute inset-x-0",
-                      "top-[calc(50%_+_22px)]",
+                      "top-[calc(30%_+_22px)] lg:top-[calc(50%_+_22px)]",
                       isAbove && "lg:top-auto lg:bottom-[calc(50%_+_22px)]",
                     )}
                   >
@@ -257,7 +256,7 @@ export default function Experience() {
 
             {/* CTA card — always below */}
             <div className="flex-shrink-0 w-72 sm:w-80 h-full relative">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
+              <div className="absolute top-[30%] lg:top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
                 <div
                   className="w-4 h-4 rounded-full border-2 border-deep-accent/50"
                   style={{
@@ -269,10 +268,10 @@ export default function Experience() {
 
               <div
                 className="absolute left-1/2 -translate-x-1/2 w-px h-4 bg-deep-accent/20
-                           top-[calc(50%_+_8px)]"
+                           top-[calc(30%_+_8px)] lg:top-[calc(50%_+_8px)]"
               />
 
-              <div className="absolute inset-x-0 top-[calc(50%_+_24px)]">
+              <div className="absolute inset-x-0 top-[calc(30%_+_24px)] lg:top-[calc(50%_+_24px)]">
                 <motion.div
                   initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
                   whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}

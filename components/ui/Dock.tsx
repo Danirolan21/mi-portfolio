@@ -52,10 +52,9 @@ export default function Dock() {
   }
 
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
-      {/* Contenedor del dock */}
-      <div className="flex items-end gap-2 px-5 py-3 rounded-2xl
-                      bg-deep-surface/60 backdrop-blur-md
+    <div className="fixed bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 z-50">
+      <div className="flex items-end gap-1.5 sm:gap-2 px-3.5 py-2.5 sm:px-5 sm:py-3
+                      rounded-2xl bg-deep-surface/60 backdrop-blur-md
                       border border-white/10 shadow-xl">
         {sections.map(({ id, label, icon: Icon }) => {
           const isActive = active === id
@@ -91,7 +90,7 @@ export default function Dock() {
                 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 className="relative flex items-center justify-center
-                           w-11 h-11 rounded-xl cursor-pointer
+                           w-10 h-10 sm:w-11 sm:h-11 rounded-xl cursor-pointer
                            transition-colors duration-200"
               >
                 {/* Fondo del icono activo */}

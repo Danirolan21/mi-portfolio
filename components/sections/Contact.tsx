@@ -137,7 +137,7 @@ export default function Contact() {
     <section
       id="contact"
       className="relative min-h-screen flex items-center justify-center
-                 px-6 lg:px-16 xl:px-24 py-24"
+                 px-6 lg:px-16 xl:px-24 pt-14 pb-28 sm:py-24"
     >
       {/* Ambient glow */}
       <div

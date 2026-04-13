@@ -68,7 +68,7 @@ export default function About() {
     <section
       id="about"
       className="relative min-h-screen flex items-center justify-center
-                 px-6 lg:px-16 xl:px-24 py-24"
+                 px-6 lg:px-16 xl:px-24 pt-14 pb-24 sm:py-24"
     >
       {/* Ambient glow */}
       <div
