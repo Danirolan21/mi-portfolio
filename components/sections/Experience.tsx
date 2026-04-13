@@ -105,7 +105,7 @@ export default function Experience() {
     const measure = () => {
       if (trackRef.current) {
         setScrollEnd(
-          Math.max(0, trackRef.current.scrollWidth - window.innerWidth)
+          Math.max(0, trackRef.current.scrollWidth - window.innerWidth + 80)
         )
       }
     }
@@ -135,7 +135,7 @@ export default function Experience() {
     <section
       id="experience"
       ref={containerRef}
-      style={{ minHeight: `${totalItems * 85}vh` }}
+      style={{ minHeight: `${totalItems * 100}vh` }}
       className="relative"
     >
       <div className="sticky top-0 h-screen flex flex-col overflow-hidden">
@@ -234,7 +234,7 @@ export default function Experience() {
                   {/* Vertical stem from dot toward card */}
                   <div
                     className={cn(
-                      "absolute left-1/2 -translate-x-1/2 w-px h-7",
+                      "absolute left-1/2 -translate-x-1/2 w-px h-4",
                       "top-[calc(50%_+_6px)]",
                       isAbove && "lg:top-auto lg:bottom-[calc(50%_+_6px)]",
                     )}
@@ -245,8 +245,8 @@ export default function Experience() {
                   <div
                     className={cn(
                       "absolute inset-x-0",
-                      "top-[calc(50%_+_34px)]",
-                      isAbove && "lg:top-auto lg:bottom-[calc(50%_+_34px)]",
+                      "top-[calc(50%_+_22px)]",
+                      isAbove && "lg:top-auto lg:bottom-[calc(50%_+_22px)]",
                     )}
                   >
                     <TimelineCard item={item} />
@@ -268,11 +268,11 @@ export default function Experience() {
               </div>
 
               <div
-                className="absolute left-1/2 -translate-x-1/2 w-px h-7 bg-deep-accent/20
+                className="absolute left-1/2 -translate-x-1/2 w-px h-4 bg-deep-accent/20
                            top-[calc(50%_+_8px)]"
               />
 
-              <div className="absolute inset-x-0 top-[calc(50%_+_36px)]">
+              <div className="absolute inset-x-0 top-[calc(50%_+_24px)]">
                 <motion.div
                   initial={{ opacity: 0, y: 24, filter: "blur(6px)" }}
                   whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}

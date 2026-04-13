@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
   House,
@@ -21,8 +21,8 @@ const sections = [
 export default function Dock() {
   const [active, setActive] = useState("home")
   const [tooltip, setTooltip] = useState<string | null>(null)
+  const isScrollingRef = useRef(false)
 
-  // Detecta qué sección está visible con IntersectionObserver
   useEffect(() => {
     const observers: IntersectionObserver[] = []
 
@@ -32,9 +32,9 @@ export default function Dock() {
 
       const observer = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting) setActive(id)
+          if (entry.isIntersecting && !isScrollingRef.current) setActive(id)
         },
-        { threshold: 0.5 } // se activa cuando el 50% de la sección es visible
+        { threshold: 0, rootMargin: "-35% 0px -35% 0px" },
       )
 
       observer.observe(el)
@@ -45,8 +45,10 @@ export default function Dock() {
   }, [])
 
   const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+    isScrollingRef.current = true
     setActive(id)
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+    setTimeout(() => { isScrollingRef.current = false }, 1200)
   }
 
   return (

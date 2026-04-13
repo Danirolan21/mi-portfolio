@@ -95,7 +95,7 @@ export type TimelineItem = {
     },
     {
       type:         "education",
-      date:         "2025 – Actualidad",
+      date:         "2026 - Actualidad",
       title:        "Máster en Desarrollo con IA",
       organization: "En curso",
       location:     "Madrid",
