@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { useTheme } from 'next-themes'
 
 const GRAD: [number, number][] = [
   [1, 1], [-1, 1], [1, -1], [-1, -1],
@@ -63,7 +64,26 @@ function createNoise2D() {
   }
 }
 
-const BG_R = 13, BG_G = 27, BG_B = 42
+const DARK_PALETTE = {
+  bg: [13, 27, 42],
+  particleHue: [200, 30],
+  starHue: [45, 15],
+  particleLightness: [25, 18],
+  starLightness: [65, 25],
+  cursorGlow1: 'rgba(119,141,169,0.05)',
+  cursorGlow2: 'rgba(65,90,119,0.025)',
+} as const
+
+const LIGHT_PALETTE = {
+  bg: [240, 244, 248],
+  particleHue: [210, 25],
+  starHue: [35, 15],
+  particleLightness: [55, 18],
+  starLightness: [40, 15],
+  cursorGlow1: 'rgba(44,74,110,0.04)',
+  cursorGlow2: 'rgba(107,127,149,0.02)',
+} as const
+
 const TRAIL_LEN = 16
 
 interface Particle {
@@ -77,6 +97,12 @@ interface Particle {
 export default function SpotlightBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const mouseRef = useRef({ x: -9999, y: -9999 })
+  const themeRef = useRef<'dark' | 'light'>('dark')
+  const { resolvedTheme } = useTheme()
+
+  useEffect(() => {
+    themeRef.current = resolvedTheme === 'light' ? 'light' : 'dark'
+  }, [resolvedTheme])
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -98,11 +124,14 @@ export default function SpotlightBackground() {
 
     const particles: Particle[] = []
 
+    const getPalette = () => themeRef.current === 'light' ? LIGHT_PALETTE : DARK_PALETTE
+
     const spawn = (nearCursor = false): Particle => {
       const { x: mx, y: my } = mouseRef.current
       const near = nearCursor && mx > 0
       const maxLife = 200 + Math.random() * 300
       const star = Math.random() < 0.04
+      const pal = getPalette()
       let x: number, y: number
 
       if (near) {
@@ -119,8 +148,12 @@ export default function SpotlightBackground() {
         x, y,
         tx: [x], ty: [y],
         life: maxLife, maxLife,
-        hue: star ? 45 + Math.random() * 15 : 200 + Math.random() * 30,
-        lightness: star ? 65 + Math.random() * 25 : 25 + Math.random() * 18,
+        hue: star
+          ? pal.starHue[0] + Math.random() * pal.starHue[1]
+          : pal.particleHue[0] + Math.random() * pal.particleHue[1],
+        lightness: star
+          ? pal.starLightness[0] + Math.random() * pal.starLightness[1]
+          : pal.particleLightness[0] + Math.random() * pal.particleLightness[1],
         width: star ? 1.8 + Math.random() * 0.7 : 0.6 + Math.random() * 1.2,
       }
     }
@@ -181,12 +214,16 @@ export default function SpotlightBackground() {
     const frame = () => {
       time += 0.0005
 
-      // Full clear each frame -- no staining
-      ctx.fillStyle = `rgb(${BG_R},${BG_G},${BG_B})`
+      const pal = getPalette()
+      const [bgR, bgG, bgB] = pal.bg
+
+      ctx.fillStyle = `rgb(${bgR},${bgG},${bgB})`
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
       const { x: mx, y: my } = mouseRef.current
       const hasCursor = mx > 0
+
+      const particleAlphaScale = themeRef.current === 'light' ? 0.7 : 1
 
       for (let i = 0; i < COUNT; i++) {
         const p = particles[i]
@@ -233,17 +270,15 @@ export default function SpotlightBackground() {
 
         const len = p.tx.length
         if (len > 1) {
-          // Glow layer
           ctx.beginPath()
           ctx.moveTo(p.tx[0], p.ty[0])
           for (let j = 1; j < len; j++) ctx.lineTo(p.tx[j], p.ty[j])
           ctx.lineWidth = p.width * 3
-          ctx.strokeStyle = `hsla(${p.hue},60%,${l}%,${lifeAlpha * 0.07})`
+          ctx.strokeStyle = `hsla(${p.hue},60%,${l}%,${lifeAlpha * 0.07 * particleAlphaScale})`
           ctx.stroke()
 
-          // Core layer
           ctx.lineWidth = p.width
-          ctx.strokeStyle = `hsla(${p.hue},60%,${l}%,${lifeAlpha * 0.4})`
+          ctx.strokeStyle = `hsla(${p.hue},60%,${l}%,${lifeAlpha * 0.4 * particleAlphaScale})`
           ctx.stroke()
         }
 
@@ -258,8 +293,8 @@ export default function SpotlightBackground() {
 
       if (hasCursor) {
         const g = ctx.createRadialGradient(mx, my, 0, mx, my, 180)
-        g.addColorStop(0, 'rgba(119,141,169,0.05)')
-        g.addColorStop(0.5, 'rgba(65,90,119,0.025)')
+        g.addColorStop(0, pal.cursorGlow1)
+        g.addColorStop(0.5, pal.cursorGlow2)
         g.addColorStop(1, 'transparent')
         ctx.fillStyle = g
         ctx.fillRect(mx - 180, my - 180, 360, 360)

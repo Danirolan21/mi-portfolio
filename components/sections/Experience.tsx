@@ -4,17 +4,18 @@ import { useEffect, useRef, useState } from "react"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { Briefcase, GraduationCap, Award } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { timeline, type TimelineItem } from "@/data/experience"
+import { localizeTimeline, type LocalizedTimelineItem } from "@/data/experience"
+import { useTranslation } from "@/contexts/LanguageContext"
 
 const EASE = [0.25, 0, 0, 1] as const
 
-const typeConfig = {
-  work:          { icon: Briefcase,     color: "#F59E0B", label: "Trabajo" },
-  education:     { icon: GraduationCap, color: "#3B82F6", label: "Educación" },
-  certification: { icon: Award,         color: "#10B981", label: "Certificación" },
-}
-
-function TimelineCard({ item }: { item: TimelineItem }) {
+function TimelineCard({
+  item,
+  typeConfig,
+}: {
+  item: LocalizedTimelineItem
+  typeConfig: Record<string, { icon: typeof Briefcase; color: string; label: string }>
+}) {
   const { icon: Icon, color } = typeConfig[item.type]
 
   return (
@@ -33,12 +34,11 @@ function TimelineCard({ item }: { item: TimelineItem }) {
         transition={{ type: "spring", stiffness: 400, damping: 25 }}
         className="w-full p-3.5 sm:p-4 lg:p-5 rounded-2xl cursor-default
                    bg-deep-surface/80 backdrop-blur-xl
-                   border border-white/[0.08]
-                   hover:border-white/[0.15]
+                   border border-overlay/[0.08]
+                   hover:border-overlay/[0.15]
                    transition-colors duration-300"
         style={{ borderLeft: `3px solid ${color}` }}
       >
-        {/* Header: icon + date */}
         <div className="flex items-start justify-between gap-3">
           <div
             className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-lg shrink-0"
@@ -51,7 +51,6 @@ function TimelineCard({ item }: { item: TimelineItem }) {
           </span>
         </div>
 
-        {/* Title, org, location */}
         <div className="mt-2.5 sm:mt-3">
           <h3 className="font-display text-deep-text text-[13px] sm:text-sm font-bold leading-snug">
             {item.title}
@@ -62,7 +61,6 @@ function TimelineCard({ item }: { item: TimelineItem }) {
           <p className="text-deep-muted/40 text-[11px]">{item.location}</p>
         </div>
 
-        {/* Description */}
         <div className="mt-2 sm:mt-2.5 flex flex-col gap-0.5">
           {item.description.map((line, i) => (
             <p key={i} className="text-deep-muted/80 text-[11px] sm:text-xs leading-relaxed">
@@ -71,9 +69,8 @@ function TimelineCard({ item }: { item: TimelineItem }) {
           ))}
         </div>
 
-        {/* Tags */}
         {item.tags && (
-          <div className="flex flex-wrap gap-1 sm:gap-1.5 mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-white/[0.04]">
+          <div className="flex flex-wrap gap-1 sm:gap-1.5 mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-overlay/[0.04]">
             {item.tags.map(tag => (
               <span
                 key={tag}
@@ -91,10 +88,19 @@ function TimelineCard({ item }: { item: TimelineItem }) {
 }
 
 export default function Experience() {
+  const { t, locale } = useTranslation()
+  const localizedTimeline = localizeTimeline(locale)
+
+  const typeConfig = {
+    work:          { icon: Briefcase,     color: "#F59E0B", label: t.experience.work },
+    education:     { icon: GraduationCap, color: "#3B82F6", label: t.experience.education },
+    certification: { icon: Award,         color: "#10B981", label: t.experience.certification },
+  }
+
   const containerRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
 
-  const totalItems = timeline.length + 1
+  const totalItems = localizedTimeline.length + 1
   const cardWidth  = 320
   const gap        = 32
   const totalWidth = totalItems * (cardWidth + gap)
@@ -131,6 +137,8 @@ export default function Experience() {
     ["0%", "100%"],
   )
 
+  const [ctaLine1, ctaLine2] = t.experience.ctaDescription.split("\n")
+
   return (
     <section
       id="experience"
@@ -158,7 +166,7 @@ export default function Experience() {
             className="font-display text-deep-accent text-sm sm:text-base
                        font-semibold tracking-wide uppercase"
           >
-            Trayectoria
+            {t.experience.label}
           </motion.span>
 
           <motion.h2
@@ -169,10 +177,9 @@ export default function Experience() {
             className="font-display text-deep-text text-2xl sm:text-4xl lg:text-5xl
                        font-extrabold tracking-tight"
           >
-            Experiencia & Formación
+            {t.experience.title}
           </motion.h2>
 
-          {/* Legend with colored dots */}
           <motion.div
             initial={{ opacity: 0, filter: "blur(4px)" }}
             whileInView={{ opacity: 1, filter: "blur(0px)" }}
@@ -197,23 +204,20 @@ export default function Experience() {
 
         {/* ── Timeline track area ── */}
         <div className="relative flex-1 min-h-0">
-          {/* Static timeline spine */}
-          <div className="absolute top-[30%] lg:top-1/2 left-0 w-full h-px bg-white/[0.06] -translate-y-[0.5px]" />
+          <div className="absolute top-[30%] lg:top-1/2 left-0 w-full h-px bg-overlay/[0.06] -translate-y-[0.5px]" />
 
-          {/* Animated progress fill */}
           <motion.div
             className="absolute top-[30%] lg:top-1/2 left-0 h-[2px] -translate-y-[1px] rounded-r-full
                        bg-gradient-to-r from-deep-accent/50 via-deep-accent/30 to-transparent"
             style={{ width: progressWidth }}
           />
 
-          {/* Scrolling horizontal track */}
           <motion.div
             ref={trackRef}
             style={{ x: translateX }}
             className="h-full flex gap-8 px-6 lg:px-16 xl:px-24 will-change-transform"
           >
-            {timeline.map((item, i) => {
+            {localizedTimeline.map((item, i) => {
               const isAbove = i % 2 === 0
               const { color } = typeConfig[item.type]
 
@@ -230,7 +234,6 @@ export default function Experience() {
                     />
                   </div>
 
-                  {/* Vertical stem from dot toward card */}
                   <div
                     className={cn(
                       "absolute left-1/2 -translate-x-1/2 w-px h-4",
@@ -240,7 +243,6 @@ export default function Experience() {
                     style={{ backgroundColor: `${color}35` }}
                   />
 
-                  {/* Card — mobile: always below, desktop: zigzag */}
                   <div
                     className={cn(
                       "absolute inset-x-0",
@@ -248,13 +250,13 @@ export default function Experience() {
                       isAbove && "lg:top-auto lg:bottom-[calc(50%_+_22px)]",
                     )}
                   >
-                    <TimelineCard item={item} />
+                    <TimelineCard item={item} typeConfig={typeConfig} />
                   </div>
                 </div>
               )
             })}
 
-            {/* CTA card — always below */}
+            {/* CTA card */}
             <div className="flex-shrink-0 w-72 sm:w-80 h-full relative">
               <div className="absolute top-[30%] lg:top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
                 <div
@@ -284,12 +286,12 @@ export default function Experience() {
                 >
                   <span className="text-deep-accent text-2xl">✦</span>
                   <p className="font-display text-deep-text text-sm font-bold">
-                    El siguiente capítulo
+                    {t.experience.ctaTitle}
                   </p>
                   <p className="text-deep-muted text-xs leading-relaxed">
-                    Grado en Ingeniería Informática en el horizonte.
+                    {ctaLine1}
                     <br />
-                    Siempre aprendiendo.
+                    {ctaLine2}
                   </p>
                 </motion.div>
               </div>

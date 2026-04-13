@@ -1,5 +1,6 @@
 "use client"
 
+import { useTheme } from "next-themes"
 import { motion, type Variants } from "framer-motion"
 import {
   SiReact, SiNextdotjs, SiTypescript, SiTailwindcss,
@@ -7,6 +8,7 @@ import {
   SiGit, SiPostgresql, SiMysql,
 } from "react-icons/si"
 import { FaAws, FaMicrosoft, FaDatabase } from "react-icons/fa6"
+import { useTranslation } from "@/contexts/LanguageContext"
 
 const EASE = [0.25, 0, 0, 1] as const
 
@@ -59,10 +61,17 @@ const stack = [
 const categories = ["Frontend", "Backend", "Database", "Cloud", "Tools"] as const
 
 export default function About() {
+  const { resolvedTheme } = useTheme()
+  const { t } = useTranslation()
+  const adaptColor = (c: string) =>
+    c === "#E0E1DD" && resolvedTheme === "light" ? "#1A2332" : c
+
   const grouped = categories.map(cat => ({
     name: cat,
     items: stack.filter(s => s.category === cat),
   }))
+
+  const [titleLine1, titleLine2] = t.about.title.split("\n")
 
   return (
     <section
@@ -97,16 +106,16 @@ export default function About() {
                          text-sm sm:text-base
                          font-semibold tracking-wide uppercase"
             >
-              Sobre mí
+              {t.about.label}
             </span>
             <h2
               className="font-display text-deep-text
                          text-3xl sm:text-4xl lg:text-5xl
                          font-extrabold tracking-tight leading-[1.1]"
             >
-              Más que líneas
+              {titleLine1}
               <br />
-              de código
+              {titleLine2}
             </h2>
           </motion.div>
 
@@ -114,29 +123,21 @@ export default function About() {
             variants={item}
             className="text-deep-muted text-sm sm:text-base lg:text-lg leading-relaxed"
           >
-            Siempre fui de los que desmontaban las cosas para ver cómo funcionaban
-            por dentro. Esa curiosidad me llevó de forma natural a la programación,
-            y desde entonces no he parado. Me formé a través de ciclos formativos,
-            un máster fullstack multicloud y actualmente un máster en desarrollo
-            con IA — no porque me lo exijan, sino porque me gusta.
+            {t.about.p1}
           </motion.p>
 
           <motion.p
             variants={item}
             className="text-deep-muted text-sm sm:text-base lg:text-lg leading-relaxed"
           >
-            Lo que más me motiva es el ciclo completo: resolver un problema con
-            buena arquitectura, darle una interfaz que impacte visualmente y ver
-            cómo aporta valor real. Me especializo en React/Next.js en frontend
-            y C#/.NET en backend, con experiencia en cloud con Azure y AWS.
+            {t.about.p2}
           </motion.p>
 
           <motion.p
             variants={item}
             className="text-deep-muted/60 text-sm leading-relaxed italic"
           >
-            Cuando no estoy programando, probablemente estoy jugando o investigando
-            alguna tecnología nueva.
+            {t.about.p3}
           </motion.p>
         </div>
 
@@ -147,7 +148,7 @@ export default function About() {
                        text-sm sm:text-base
                        font-semibold tracking-wide uppercase"
           >
-            Stack & herramientas
+            {t.about.stackLabel}
           </span>
 
           <motion.div
@@ -168,37 +169,40 @@ export default function About() {
                   {name}
                 </span>
                 <div className="flex flex-wrap gap-2">
-                  {items.map(({ icon: Icon, label, color }) => (
-                    <motion.div
-                      key={label}
-                      whileHover={{
-                        scale: 1.06,
-                        y: -3,
-                        boxShadow: `0 8px 24px ${color}30`,
-                      }}
-                      whileTap={{ scale: 0.97 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                      className="group flex items-center gap-2.5
-                                 px-4 py-2.5 rounded-xl
-                                 bg-white/[0.04] border border-white/[0.06]
-                                 hover:bg-white/[0.08] hover:border-white/[0.15]
-                                 transition-all duration-300 cursor-default"
-                    >
-                      <Icon
-                        size={18}
-                        className="shrink-0 transition-all duration-300
-                                   group-hover:drop-shadow-[0_0_6px_var(--icon-color)]"
-                        style={{ color, "--icon-color": color } as React.CSSProperties}
-                      />
-                      <span
-                        className="text-deep-muted text-sm font-medium
-                                   group-hover:text-deep-text
-                                   transition-colors duration-300"
+                  {items.map(({ icon: Icon, label, color: rawColor }) => {
+                    const color = adaptColor(rawColor)
+                    return (
+                      <motion.div
+                        key={label}
+                        whileHover={{
+                          scale: 1.06,
+                          y: -3,
+                          boxShadow: `0 8px 24px ${color}30`,
+                        }}
+                        whileTap={{ scale: 0.97 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                        className="group flex items-center gap-2.5
+                                   px-4 py-2.5 rounded-xl
+                                   bg-overlay/[0.04] border border-overlay/[0.06]
+                                   hover:bg-overlay/[0.08] hover:border-overlay/[0.15]
+                                   transition-all duration-300 cursor-default"
                       >
-                        {label}
-                      </span>
-                    </motion.div>
-                  ))}
+                        <Icon
+                          size={18}
+                          className="shrink-0 transition-all duration-300
+                                     group-hover:drop-shadow-[0_0_6px_var(--icon-color)]"
+                          style={{ color, "--icon-color": color } as React.CSSProperties}
+                        />
+                        <span
+                          className="text-deep-muted text-sm font-medium
+                                     group-hover:text-deep-text
+                                     transition-colors duration-300"
+                        >
+                          {label}
+                        </span>
+                      </motion.div>
+                    )
+                  })}
                 </div>
               </motion.div>
             ))}

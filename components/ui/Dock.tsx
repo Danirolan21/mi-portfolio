@@ -9,19 +9,29 @@ import {
   Briefcase,
   Mail,
 } from "lucide-react"
+import { useTranslation } from "@/contexts/LanguageContext"
 
-const sections = [
-  { id: "home",       label: "Home",       icon: House       },
-  { id: "about",      label: "Sobre mí",   icon: User        },
-  { id: "projects",   label: "Proyectos",  icon: FolderGit2  },
-  { id: "experience", label: "Experiencia",icon: Briefcase   },
-  { id: "contact",    label: "Contacto",   icon: Mail        },
-]
+const sectionIds = ["home", "about", "projects", "experience", "contact"] as const
+
+const icons = {
+  home:       House,
+  about:      User,
+  projects:   FolderGit2,
+  experience: Briefcase,
+  contact:    Mail,
+}
 
 export default function Dock() {
   const [active, setActive] = useState("home")
   const [tooltip, setTooltip] = useState<string | null>(null)
   const isScrollingRef = useRef(false)
+  const { t } = useTranslation()
+
+  const sections = sectionIds.map((id) => ({
+    id,
+    label: t.dock[id],
+    icon: icons[id],
+  }))
 
   useEffect(() => {
     const observers: IntersectionObserver[] = []
@@ -42,6 +52,7 @@ export default function Dock() {
     })
 
     return () => observers.forEach((o) => o.disconnect())
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const scrollTo = (id: string) => {
@@ -55,14 +66,13 @@ export default function Dock() {
     <div className="fixed bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 z-50">
       <div className="flex items-end gap-1.5 sm:gap-2 px-3.5 py-2.5 sm:px-5 sm:py-3
                       rounded-2xl bg-deep-surface/60 backdrop-blur-md
-                      border border-white/10 shadow-xl">
+                      border border-overlay/10 shadow-xl">
         {sections.map(({ id, label, icon: Icon }) => {
           const isActive = active === id
 
           return (
             <div key={id} className="relative flex flex-col items-center">
 
-              {/* Tooltip */}
               <AnimatePresence>
                 {tooltip === id && (
                   <motion.div
@@ -71,7 +81,7 @@ export default function Dock() {
                     exit={{ opacity: 0, y: 4 }}
                     transition={{ duration: 0.15 }}
                     className="absolute -top-9 px-2 py-1 rounded-md text-xs
-                               bg-deep-surface border border-white/10
+                               bg-deep-surface border border-overlay/10
                                text-deep-text whitespace-nowrap pointer-events-none"
                   >
                     {label}
@@ -79,7 +89,6 @@ export default function Dock() {
                 )}
               </AnimatePresence>
 
-              {/* Botón del icono */}
               <motion.button
                 onClick={() => scrollTo(id)}
                 onMouseEnter={() => setTooltip(id)}
@@ -93,7 +102,6 @@ export default function Dock() {
                            w-10 h-10 sm:w-11 sm:h-11 rounded-xl cursor-pointer
                            transition-colors duration-200"
               >
-                {/* Fondo del icono activo */}
                 {isActive && (
                   <motion.div
                     layoutId="dock-active"

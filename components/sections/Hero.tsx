@@ -4,6 +4,7 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import { FileText, Mail } from "lucide-react"
 import GlowBadge from "@/components/ui/GlowBadge"
+import { useTranslation } from "@/contexts/LanguageContext"
 
 function GithubIcon({ size = 24 }: { size?: number }) {
   return (
@@ -57,6 +58,9 @@ const socialLinks = [
 ]
 
 export default function Hero() {
+  const { t } = useTranslation()
+  const [firstName, lastName] = t.hero.name.split("\n")
+
   return (
     <section
       id="home"
@@ -86,7 +90,7 @@ export default function Hero() {
                        p-8 sm:p-10 lg:p-0
                        bg-deep-surface/20 lg:bg-transparent
                        backdrop-blur-xl lg:backdrop-blur-none
-                       border border-white/[0.08] lg:border-transparent
+                       border border-overlay/[0.08] lg:border-transparent
                        rounded-3xl lg:rounded-none
                        shadow-[0_8px_64px_rgba(65,90,119,0.12)] lg:shadow-none"
           >
@@ -105,7 +109,7 @@ export default function Hero() {
             >
               {/* Status badge */}
               <motion.div variants={item}>
-                <GlowBadge>Disponible para proyectos</GlowBadge>
+                <GlowBadge>{t.hero.badge}</GlowBadge>
               </motion.div>
 
               {/* Mobile-only avatar */}
@@ -120,12 +124,12 @@ export default function Hero() {
                   />
                   <div
                     className="relative w-28 h-28 rounded-full
-                               ring-2 ring-white/10 ring-offset-2
+                               ring-2 ring-overlay/10 ring-offset-2
                                ring-offset-transparent overflow-hidden"
                   >
                     <Image
                       src="/images/avatar.png"
-                      alt="Foto de Daniel Rodriguez"
+                      alt={t.hero.photoAlt}
                       fill
                       sizes="112px"
                       className="object-cover"
@@ -143,24 +147,23 @@ export default function Hero() {
                                text-4xl sm:text-5xl lg:text-6xl xl:text-7xl
                                font-extrabold tracking-tight leading-[1.05]"
                   >
-                    Daniel
+                    {firstName}
                     <br />
-                    Rodriguez
+                    {lastName}
                   </h1>
                   <span
                     className="font-display text-deep-accent
                                text-base sm:text-lg lg:text-xl
                                font-semibold tracking-wide uppercase"
                   >
-                    Frontend Developer
+                    {t.hero.role}
                   </span>
                 </div>
                 <p
                   className="text-deep-muted text-sm sm:text-base lg:text-lg
                              leading-relaxed max-w-md"
                 >
-                  Apasionado por crear interfaces con atención al detalle y
-                  buena experiencia de usuario.
+                  {t.hero.description}
                 </p>
               </motion.div>
 
@@ -185,12 +188,12 @@ export default function Hero() {
                 >
                   <span
                     aria-hidden
-                    className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent
+                    className="absolute inset-0 bg-gradient-to-r from-overlay/10 to-transparent
                                translate-x-[-100%] group-hover:translate-x-[100%]
                                transition-transform duration-700"
                   />
                   <FileText size={16} className="relative" />
-                  <span className="relative">Ver CV</span>
+                  <span className="relative">{t.hero.viewCv}</span>
                 </motion.a>
                 <motion.a
                   href="#contact"
@@ -204,15 +207,15 @@ export default function Hero() {
                   whileTap={{ scale: 0.97 }}
                   transition={{ type: "spring", stiffness: 400, damping: 25 }}
                   className="flex items-center gap-2.5 px-6 py-3 rounded-2xl
-                             bg-white/[0.05] backdrop-blur-sm
-                             border border-white/[0.12]
+                             bg-overlay/[0.05] backdrop-blur-sm
+                             border border-overlay/[0.12]
                              text-deep-muted text-sm font-medium
-                             hover:bg-white/[0.08] hover:text-deep-text
-                             hover:border-white/20
+                             hover:bg-overlay/[0.08] hover:text-deep-text
+                             hover:border-overlay/20
                              transition-all duration-300 cursor-pointer"
                 >
                   <Mail size={16} />
-                  Contacto
+                  {t.hero.contact}
                 </motion.a>
               </motion.div>
 
@@ -220,7 +223,7 @@ export default function Hero() {
               <motion.div
                 variants={item}
                 className="inline-flex gap-1 p-1.5 rounded-2xl
-                           bg-white/[0.04] border border-white/[0.08]"
+                           bg-overlay/[0.04] border border-overlay/[0.08]"
               >
                 {socialLinks.map((link) => (
                   <motion.a
@@ -233,7 +236,7 @@ export default function Hero() {
                     whileTap={{ scale: 0.95 }}
                     transition={{ type: "spring", stiffness: 400, damping: 20 }}
                     className="p-2.5 rounded-xl text-deep-muted
-                               hover:text-deep-text hover:bg-white/[0.08]
+                               hover:text-deep-text hover:bg-overlay/[0.08]
                                transition-all duration-200"
                   >
                     {link.icon}
@@ -263,12 +266,12 @@ export default function Hero() {
               <div
                 className="relative w-72 h-72 xl:w-80 xl:h-80 2xl:w-96 2xl:h-96
                            rounded-full overflow-hidden
-                           ring-2 ring-white/[0.08] ring-offset-4 ring-offset-transparent
+                           ring-2 ring-overlay/[0.08] ring-offset-4 ring-offset-transparent
                            shadow-[0_12px_48px_rgba(65,90,119,0.25)]"
               >
                 <Image
                   src="/images/avatar.png"
-                  alt="Foto de Daniel Rodriguez"
+                  alt={t.hero.photoAlt}
                   fill
                   sizes="(min-width: 1536px) 384px, (min-width: 1280px) 320px, 288px"
                   className="object-cover"

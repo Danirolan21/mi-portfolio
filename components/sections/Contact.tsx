@@ -1,12 +1,14 @@
 "use client"
 
 import { useRef, useState } from "react"
+import { useTheme } from "next-themes"
 import { motion, AnimatePresence } from "framer-motion"
 import emailjs from "@emailjs/browser"
 import { Mail, Send, CheckCircle, XCircle, Loader2 } from "lucide-react"
 import { SiGithub } from "react-icons/si"
 import { FaLinkedinIn } from "react-icons/fa6"
 import { cn } from "@/lib/utils"
+import { useTranslation } from "@/contexts/LanguageContext"
 
 const EASE = [0.25, 0, 0, 1] as const
 
@@ -49,9 +51,8 @@ const links = [
   },
 ]
 
-// ── Input / Textarea reutilizable ─────────────────────────────────
 function Field({
-  label, name, type = "text", textarea = false, value, onChange, disabled,
+  label, name, type = "text", textarea = false, value, onChange, disabled, placeholder,
 }: {
   label:    string
   name:     string
@@ -60,9 +61,10 @@ function Field({
   value:    string
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
   disabled: boolean
+  placeholder: string
 }) {
   const base = cn(
-    "w-full bg-deep-base/80 border border-white/[0.08] rounded-xl",
+    "w-full bg-deep-base/80 border border-overlay/[0.08] rounded-xl",
     "px-4 py-3 text-sm text-deep-text placeholder:text-deep-muted/40",
     "focus:outline-none focus:border-deep-accent/60 focus:bg-deep-base",
     "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -80,7 +82,7 @@ function Field({
           value={value}
           onChange={onChange}
           disabled={disabled}
-          placeholder={`Tu ${label.toLowerCase()}...`}
+          placeholder={placeholder}
           rows={5}
           className={cn(base, "resize-none")}
         />
@@ -91,7 +93,7 @@ function Field({
           value={value}
           onChange={onChange}
           disabled={disabled}
-          placeholder={`Tu ${label.toLowerCase()}...`}
+          placeholder={placeholder}
           className={base}
         />
       )}
@@ -99,11 +101,17 @@ function Field({
   )
 }
 
-// ── Componente principal ──────────────────────────────────────────
 export default function Contact() {
   const formRef = useRef<HTMLFormElement>(null)
   const [status, setStatus] = useState<Status>("idle")
   const [form, setForm] = useState({ name: "", email: "", message: "" })
+  const { resolvedTheme } = useTheme()
+  const { t } = useTranslation()
+  const adaptColor = (c: string) =>
+    c === "#E0E1DD" && resolvedTheme === "light" ? "#1A2332" : c
+
+  const makePlaceholder = (field: string) =>
+    t.contact.placeholder.replace("{field}", field.toLowerCase())
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
@@ -126,7 +134,6 @@ export default function Contact() {
     } catch {
       setStatus("error")
     } finally {
-      // Vuelve a idle después de 4 segundos
       setTimeout(() => setStatus("idle"), 4000)
     }
   }
@@ -157,91 +164,94 @@ export default function Contact() {
                    grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-16 lg:gap-24
                    items-start"
       >
-
-        {/* ── Columna izquierda: info ── */}
+        {/* ── Left column: info ── */}
         <div className="flex flex-col gap-8">
           <motion.div variants={item} className="flex flex-col gap-3">
             <span className="text-deep-accent text-sm font-semibold tracking-wide uppercase">
-              Contacto
+              {t.contact.label}
             </span>
             <h2 className="text-deep-text text-3xl sm:text-4xl lg:text-5xl
                            font-extrabold tracking-tight leading-[1.1]">
-              Hablemos
+              {t.contact.title}
             </h2>
             <p className="text-deep-muted text-sm sm:text-base leading-relaxed">
-              ¿Tienes un proyecto en mente o una oportunidad que compartir?
-              Escríbeme, respondo en menos de 24h.
+              {t.contact.description}
             </p>
           </motion.div>
 
           {/* Links */}
           <motion.div variants={item} className="flex flex-col gap-3">
-            {links.map(({ icon: Icon, label, value, href, color }) => (
-              <a
-                key={label}
-                href={href}
-                target={href.startsWith("mailto") ? undefined : "_blank"}
-                rel="noopener noreferrer"
-                className="group flex items-center gap-4 p-4 rounded-xl
-                           bg-deep-surface/40 border border-white/[0.06]
-                           hover:border-white/[0.15] hover:bg-deep-surface/70
-                           transition-all duration-200"
-              >
-                <div
-                  className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0"
-                  style={{ backgroundColor: `${color}15`, border: `1px solid ${color}25` }}
+            {links.map(({ icon: Icon, label, value, href, color: rawColor }) => {
+              const color = adaptColor(rawColor)
+              return (
+                <a
+                  key={label}
+                  href={href}
+                  target={href.startsWith("mailto") ? undefined : "_blank"}
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-4 p-4 rounded-xl
+                             bg-deep-surface/40 border border-overlay/[0.06]
+                             hover:border-overlay/[0.15] hover:bg-deep-surface/70
+                             transition-all duration-200"
                 >
-                  <Icon size={16} style={{ color }} />
-                </div>
-                <div className="flex flex-col min-w-0">
-                  <span className="text-deep-muted/60 text-[11px] font-medium
-                                   tracking-wide uppercase">
-                    {label}
-                  </span>
-                  <span className="text-deep-text text-xs sm:text-sm truncate
-                                   group-hover:text-white transition-colors duration-200">
-                    {value}
-                  </span>
-                </div>
-              </a>
-            ))}
+                  <div
+                    className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0"
+                    style={{ backgroundColor: `${color}15`, border: `1px solid ${color}25` }}
+                  >
+                    <Icon size={16} style={{ color }} />
+                  </div>
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-deep-muted/60 text-[11px] font-medium
+                                     tracking-wide uppercase">
+                      {label}
+                    </span>
+                    <span className="text-deep-text text-xs sm:text-sm truncate
+                                     group-hover:text-deep-text transition-colors duration-200">
+                      {value}
+                    </span>
+                  </div>
+                </a>
+              )
+            })}
           </motion.div>
         </div>
 
-        {/* ── Columna derecha: formulario ── */}
+        {/* ── Right column: form ── */}
         <motion.div variants={item}>
           <form
             ref={formRef}
             onSubmit={handleSubmit}
             className="flex flex-col gap-5 p-6 sm:p-8 rounded-2xl
-                       bg-deep-surface/95 border border-white/[0.08]
+                       bg-deep-surface/95 border border-overlay/[0.08]
                        backdrop-blur-2xl shadow-[0_8px_64px_rgba(0,0,0,0.35)]"
           >
             <Field
-              label="Nombre"
+              label={t.contact.fieldName}
               name="name"
               value={form.name}
               onChange={handleChange}
               disabled={isLoading}
+              placeholder={makePlaceholder(t.contact.fieldName)}
             />
             <Field
-              label="Email"
+              label={t.contact.fieldEmail}
               name="email"
               type="email"
               value={form.email}
               onChange={handleChange}
               disabled={isLoading}
+              placeholder={makePlaceholder(t.contact.fieldEmail)}
             />
             <Field
-              label="Mensaje"
+              label={t.contact.fieldMessage}
               name="message"
               textarea
               value={form.message}
               onChange={handleChange}
               disabled={isLoading}
+              placeholder={makePlaceholder(t.contact.fieldMessage)}
             />
 
-            {/* Botón de envío */}
             <button
               type="submit"
               disabled={isLoading || !form.name || !form.email || !form.message}
@@ -257,10 +267,9 @@ export default function Contact() {
               ) : (
                 <Send size={16} />
               )}
-              {isLoading ? "Enviando..." : "Enviar mensaje"}
+              {isLoading ? t.contact.sending : t.contact.send}
             </button>
 
-            {/* Feedback de éxito / error */}
             <AnimatePresence>
               {status === "success" && (
                 <motion.div
@@ -271,7 +280,7 @@ export default function Contact() {
                   className="flex items-center gap-2 text-emerald-400 text-sm"
                 >
                   <CheckCircle size={16} />
-                  Mensaje enviado. ¡Gracias!
+                  {t.contact.success}
                 </motion.div>
               )}
               {status === "error" && (
@@ -283,13 +292,12 @@ export default function Contact() {
                   className="flex items-center gap-2 text-red-400 text-sm"
                 >
                   <XCircle size={16} />
-                  Algo salió mal. Inténtalo de nuevo.
+                  {t.contact.error}
                 </motion.div>
               )}
             </AnimatePresence>
           </form>
         </motion.div>
-
       </motion.div>
     </section>
   )

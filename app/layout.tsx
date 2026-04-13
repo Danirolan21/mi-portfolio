@@ -3,6 +3,9 @@ import { Geist, Geist_Mono, Sora } from 'next/font/google'
 import './globals.css'
 import SpotlightBackground from '@/components/ui/SpotlightBackground'
 import Dock from '@/components/ui/Dock'
+import ThemeToggle from '@/components/ui/ThemeToggle'
+import LanguageSwitcher from '@/components/ui/LanguageSwitcher'
+import Providers from '@/components/providers/Providers'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -32,13 +35,18 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="es"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${sora.variable} h-full antialiased`}
     >
       <body className="bg-deep-base min-h-screen">
-        <SpotlightBackground />
-        <div className="relative z-10">{children}</div>
-        <Dock />
+        <Providers>
+          <SpotlightBackground />
+          <div className="relative z-10">{children}</div>
+          <Dock />
+          <ThemeToggle />
+          <LanguageSwitcher />
+        </Providers>
       </body>
     </html>
   )
