@@ -64,13 +64,14 @@ export default function Dock() {
 
   return (
     <div
-      className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] sm:bottom-8
-                 left-1/2 -translate-x-1/2 z-50
-                 transform-gpu will-change-transform"
+      className="fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] sm:bottom-8 z-50
+                 flex justify-center px-4 sm:px-0"
     >
       <div className="flex items-end gap-1.5 sm:gap-2 px-3.5 py-2.5 sm:px-5 sm:py-3
+                      max-w-[calc(100vw-2rem)] sm:max-w-none
                       rounded-2xl bg-deep-surface/60 backdrop-blur-md
-                      border border-overlay/10 shadow-xl">
+                      border border-overlay/10 shadow-xl
+                      transform-gpu will-change-transform">
         {sections.map(({ id, label, icon: Icon }) => {
           const isActive = active === id
 
