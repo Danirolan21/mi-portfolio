@@ -28,6 +28,7 @@ export default function ThemeToggle() {
                  border border-overlay/10
                  shadow-lg
                  hover:bg-deep-surface/80
+                 transform-gpu will-change-transform
                  transition-colors duration-200"
       aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
     >

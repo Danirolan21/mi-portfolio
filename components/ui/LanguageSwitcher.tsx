@@ -38,7 +38,7 @@ export default function LanguageSwitcher() {
   return (
     <div
       ref={containerRef}
-      className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-50"
+      className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-50 transform-gpu will-change-transform"
     >
       <AnimatePresence>
         {open && (

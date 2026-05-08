@@ -63,7 +63,11 @@ export default function Dock() {
   }
 
   return (
-    <div className="fixed bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 z-50">
+    <div
+      className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] sm:bottom-8
+                 left-1/2 -translate-x-1/2 z-50
+                 transform-gpu will-change-transform"
+    >
       <div className="flex items-end gap-1.5 sm:gap-2 px-3.5 py-2.5 sm:px-5 sm:py-3
                       rounded-2xl bg-deep-surface/60 backdrop-blur-md
                       border border-overlay/10 shadow-xl">
