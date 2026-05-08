@@ -16,6 +16,18 @@ export interface Translations {
     p3: string
     stackLabel: string
   }
+  projects: {
+    title: string
+    label: string
+    heading: string
+    viewCode: string
+    viewDemo: string
+    openInNewTab: string
+    stackLabel: string
+    roleLabel: string
+    yearLabel: string
+    previewBlocked: string
+  }
   experience: {
     label: string
     title: string
@@ -44,9 +56,6 @@ export interface Translations {
     projects: string
     experience: string
     contact: string
-  }
-  projects: {
-    title: string
   }
 }
 
@@ -102,6 +111,15 @@ const es: Translations = {
   },
   projects: {
     title: "Proyectos",
+    label: "Portfolio",
+    heading: "Cosas que he construido",
+    viewCode: "Ver código",
+    viewDemo: "Abrir demo",
+    openInNewTab: "Abrir en nueva pestaña",
+    stackLabel: "Stack",
+    roleLabel: "Rol",
+    yearLabel: "Año",
+    previewBlocked: "Esta demo no permite vista previa embebida. Ábrela en una pestaña nueva para verla.",
   },
 }
 

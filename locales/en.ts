@@ -52,6 +52,15 @@ const en: Translations = {
   },
   projects: {
     title: "Projects",
+    label: "Portfolio",
+    heading: "Things I've built",
+    viewCode: "View code",
+    viewDemo: "Open demo",
+    openInNewTab: "Open in new tab",
+    stackLabel: "Stack",
+    roleLabel: "Role",
+    yearLabel: "Year",
+    previewBlocked: "This demo doesn't allow embedded preview. Open it in a new tab to view it.",
   },
 }
 
