@@ -316,7 +316,7 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="relative min-h-screen flex items-center justify-center
+      className="relative overflow-hidden min-h-screen flex items-center justify-center
                  px-6 lg:px-16 xl:px-24 pt-14 pb-24 sm:py-24"
     >
       {/* Ambient glow */}
